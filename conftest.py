@@ -60,7 +60,8 @@ def pytest_runtest_makereport(item, call):
             report.extras = extras
 
 
-
+def pytest_html_report_title(report):
+    report.title = "Reporte de Automatizacion - Sauce Demo y API "
 
 
 
