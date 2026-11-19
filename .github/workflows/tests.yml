@@ -1,0 +1,45 @@
+﻿name: QA Automation Tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install pytest pytest-html pytest-metadata selenium requests Faker
+          fi
+
+      - name: Run pytest
+        env:
+          HEADLESS: "true"
+        run: |
+          mkdir -p reports/screenshots logs
+          pytest --html=reports/reports_final.html --self-contained-html
+
+      - name: Upload test report and artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-automation-report
+          path: |
+            reports/
+            logs/
