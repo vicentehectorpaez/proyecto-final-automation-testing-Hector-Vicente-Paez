@@ -10,24 +10,17 @@ import os
 
 @pytest.fixture
 def driver():
-
     service_chrome = Service(ChromeDriverManager().install())
-    #navegador = webdriver.Chrome(service=service_chrome)
-
-
-    #crear ruta para test de descarga de archivos 
     chrome_options = webdriver.ChromeOptions()
 
-    prefs = {
-      "download.default_directory": r"C:\Users\Vicente.Paez\Downloads",
-      "download.prompt_for_download": False,
-      "download.directory_upgrade": True
-    }
+    if os.getenv("GITHUB_ACTIONS") == "true" or os.getenv("CI") == "true":
+        chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1920,1080")
 
-    chrome_options.add_experimental_option("prefs", prefs)
-
-    navegador = webdriver.Chrome(service=service_chrome,options=chrome_options)
-    
+    navegador = webdriver.Chrome(service=service_chrome, options=chrome_options)
 
     yield navegador
 
