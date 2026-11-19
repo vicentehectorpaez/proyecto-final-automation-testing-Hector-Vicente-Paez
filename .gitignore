@@ -43,3 +43,5 @@ screenshots/
 .idea/
 *.swp
 *.swo
+.venv/
+*.log
